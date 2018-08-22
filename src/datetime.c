@@ -14,6 +14,23 @@ static const int days[2][13] = {
 #define get_yday(year,month,day) \
     (days[yisleap(year)][month] + day)
 
+SHARED_FUNC double get_time(datetime_t *dt) {
+#ifndef WINDOWS
+    struct timeval tv;
+    double sec;
+    double msec;
+    gettimeofday(&tv,NULL);
+    tv.tv_usec /= 1000;
+    sec = (double)tv.tv_sec;
+    msec = (double)tv.tv_usec;
+    msec /= 1000;
+
+    return sec + msec;
+#else
+    return 0;
+#endif
+}
+
 
 SHARED_FUNC int get_datetime(datetime_t *dt, int utc) {
 #ifdef WINDOWS

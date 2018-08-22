@@ -17,6 +17,7 @@ struct datetime {
 typedef struct datetime datetime_t;
 
 int get_datetime(datetime_t *dt, int utc);
+double get_time(datetime_t *dt);
 ]]
 
 local tlib
@@ -29,6 +30,21 @@ else
 end
 
 local datetime = {}
+
+function datetime.time(time)
+  local dt
+  if time then
+    dt = ffi.new("datetime_t")
+    dt.year = time.year
+    dt.mon = time.month
+    dt.mday = time.day
+    dt.hour = time.hour
+    dt.min = time.min
+    dt.sec = time.sec
+    dt.isdst = time.isdst and 1 or 0
+  end
+  return tlib.get_time(dt)
+end
 
 function datetime.date(format,time)
   local utc_test = format:sub(1,1)

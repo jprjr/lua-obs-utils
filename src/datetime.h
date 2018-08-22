@@ -28,5 +28,6 @@ struct datetime {
 typedef struct datetime datetime_t;
 
 SHARED_FUNC int get_datetime(datetime_t *dt, int utc);
+SHARED_FUNC double get_time(datetime_t *dt);
 
 #endif

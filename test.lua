@@ -31,7 +31,7 @@ local function test(title,st_table,my_table)
   else
     local d_v = format_type(st_table)
     local d_myv = format_type(my_table)
-    print (k .. ', ' .. d_v .. '=' .. d_myv)
+    print (d_v .. '=' .. d_myv)
     if st_table ~= my_table then
       print("Error: expected " .. d_v .. ", got " .. d_myv)
       os.exit(1)
@@ -41,6 +41,18 @@ end
 
 test("Local time test",os.date("*t"),datetime.date("*t"))
 test("UTC time test",  os.date("!*t"),datetime.date("!*t"))
+
+test("Epoch test",os.time(),math.floor(datetime.time()))
+
+local dtable = {year = 1998, month = 9, day = 16, 
+     hour = 23, min = 48, sec = 10, isdst = false}
+
+local dstable = {year = 1998, month = 9, day = 16, 
+     hour = 23, min = 48, sec = 10, isdst = true}
+
+print(os.time(dtable))
+print(os.time(dstable))
+
 
 print("All tests passed")
 os.exit(0)
