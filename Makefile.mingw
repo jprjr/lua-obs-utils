@@ -1,0 +1,10 @@
+.PHONY: all
+
+CC=x86_64-w64-mingw32-gcc
+CFLAGS=-Wall -Wextra
+LDFLAGS=-s -nostdlib -lkernel32
+
+EXT=dll
+
+all:
+	exec $(MAKE) EXT="$(EXT)" CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" library
