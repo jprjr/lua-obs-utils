@@ -46,14 +46,14 @@ function datetime.date(format,time)
   if format == "*t" then
     return {
       year = time.year,
-      month = time.mon + 1,
+      month = time.mon,
       day = time.mday,
       hour = time.hour,
       min = time.min,
       sec = time.sec,
       milli = time.milli,
-      wday = time.wday + 1,
-      yday = time.yday + 1,
+      wday = time.wday,
+      yday = time.yday,
       isdst = time.isdst == 1
     }
   end
