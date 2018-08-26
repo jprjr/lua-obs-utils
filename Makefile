@@ -1,4 +1,6 @@
-.PHONY: all clean library cleanup
+.PHONY: all clean library cleanup dist
+
+VERSION=1.0.0
 
 CC=gcc
 CFLAGS=-fPIC -Wall -Wextra -Isrc
@@ -27,6 +29,18 @@ $(LIBRARY): $(OBJS)
 
 test: $(LIBRARY) lib/datetime.lua test.lua
 	exec luajit ./test.lua
+
+dist:
+	make -f Makefile.docker
+	mkdir -p lua-obs-utils-$(VERSION)/lib/datetime
+	cp time.lua dist
+	cp lib/datetime/*   lua-obs-utils-$(VERSION)/lib/datetime/
+	cp lib/datetime.lua lua-obs-utils-$(VERSION)/lib/datetime.lua
+	cp README.md lua-obs-utils-$(VERSION)/
+	cp LICENSE lua-obs-utils-$(VERSION)/
+	tar cf lua-obs-utils-$(VERSION).tar lua-obs-utils-$(VERSION)
+	xz lua-obs-utils-$(VERSION).tar
+	zip -r lua-obs-utils-$(VERSION).zip lua-obs-utils-$(VERSION)
 
 clean:
 	rm -f $(LIBRARY) $(OBJS)

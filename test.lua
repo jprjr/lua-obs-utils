@@ -1,4 +1,5 @@
 local datetime = require('lib.datetime')
+datetime.init('.')
 
 local my_dt_local = datetime.date("*t")
 local lua_dt_local = os.date("*t")

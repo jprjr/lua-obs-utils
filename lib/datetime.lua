@@ -34,17 +34,15 @@ int datetime_to_hrtime(datetime_t *, hrtime_t *);
 
 local tlib
 
-local function load_tlib()
+local function init(path)
   local os = string.lower(ffi.os)
   local ext = '.so'
   if os == 'windows' then
     ext = '.dll'
   end
 
-  tlib = ffi.load('./lib/datetime/core_' .. os .. '_' .. string.lower(ffi.arch) .. ext)
+  tlib = ffi.load(path .. '/lib/datetime/core_' .. os .. '_' .. string.lower(ffi.arch) .. ext)
 end
-
-load_tlib()
 
 local dt_keys = {
   'year','month','day','hour','min','sec','wday','yday','msec',
@@ -104,6 +102,7 @@ function datetime.date(format,time)
 end
 
 datetime.clock = os.clock
+datetime.init = init
 
 
 return datetime

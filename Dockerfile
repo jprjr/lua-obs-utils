@@ -1,4 +1,3 @@
-FROM ubuntu:xenial
+FROM centos:6
 
-RUN apt-get update && \
-    apt-get install -y gcc make luajit
+RUN yum install -y gcc make luajit

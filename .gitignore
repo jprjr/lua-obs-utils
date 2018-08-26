@@ -3,3 +3,4 @@
 *.dll
 *.o
 *.a
+/lua-obs-utils*
