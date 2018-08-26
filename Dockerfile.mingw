@@ -1,0 +1,24 @@
+FROM ubuntu:bionic
+
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
+    echo "yes" | apt install ttf-mscorefonts-installer -y && \
+    apt-get install -y curl gcc make wine-stable mingw-w64
+
+RUN winecfg || true
+
+RUN mkdir -p /src && \
+    curl -R -L -o /src/LuaJIT-2.0.5.tar.gz \
+      http://luajit.org/download/LuaJIT-2.0.5.tar.gz && \
+    tar xf /src/LuaJIT-2.0.5.tar.gz -C /src && \
+    cd /src/LuaJIT-2.0.5 && \
+    make HOST_CC=gcc CROSS=x86_64-w64-mingw32- TARGET_SYS=Windows && \
+    mkdir -p /opt/luajit-2.0.5 && \
+    cp src/*.exe /opt/luajit-2.0.5 && \
+    cp src/*.dll /opt/luajit-2.0.5
+
+RUN printf "#!/usr/bin/env bash" > /usr/local/bin/luajit && \
+    printf "set -x" > /usr/local/bin/luajit && \
+    printf 'exec wine /opt/luajit-2.0.5/luajit.exe "$@"' > /usr/local/bin/luajit && \
+    chmod +x /usr/local/bin/luajit && \
+    cat /usr/local/bin/luajit

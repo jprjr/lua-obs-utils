@@ -1,10 +1,10 @@
 .PHONY: all clean cleanup library
 
-CC=x86_64-w64-mingw32-gcc
-CFLAGS=-Wall -Wextra
-LDFLAGS=-s -nostdlib -lkernel32
-EXT=dll
-PLATFORM=windows
+CC=gcc
+CFLAGS=-Wall -Wextra -fPIC -g0 -Os
+LDFLAGS=-s
+EXT=so
+PLATFORM=linux
 ARCH=x64
 
 all: library

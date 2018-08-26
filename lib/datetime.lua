@@ -1,79 +1,109 @@
 local ffi = require'ffi'
+local floor = math.floor
+local match = string.match
+local gsub = string.gsub
 
 ffi.cdef[[
 struct datetime {
+  int year;
+  int month;
+  int day;
   int hour;
   int min;
   int sec;
-  int wday;
-  int mday;
   int yday;
-  int mon;
-  int year;
+  int wday;
   int isdst;
-  int milli;
+  int msec;
 };
 
 typedef struct datetime datetime_t;
 
-int get_datetime(datetime_t *dt, int utc);
-double get_time(datetime_t *dt);
+struct hrtime {
+    int64_t sec;
+    int64_t msec;
+};
+
+typedef struct hrtime hrtime_t;
+
+int get_datetime(datetime_t *, int);
+int get_hrtime(hrtime_t *);
+int datetime_to_hrtime(datetime_t *, hrtime_t *);
+
 ]]
 
 local tlib
-local os = string.lower(ffi.os)
 
-if os == 'osx' or os == 'linux' then
-  tlib = ffi.load('./lib/datetime/core.so')
-else
-  tlib = ffi.load('./lib/datetime/core.dll')
+local function load_tlib()
+  local os = string.lower(ffi.os)
+  local ext = '.so'
+  if os == 'windows' then
+    ext = '.dll'
+  end
+
+  tlib = ffi.load('./lib/datetime/core_' .. os .. '_' .. string.lower(ffi.arch) .. ext)
 end
+
+load_tlib()
+
+local dt_keys = {
+  'year','month','day','hour','min','sec','wday','yday','msec',
+}
 
 local datetime = {}
 
-function datetime.time(time)
-  local dt
-  if time then
-    dt = ffi.new("datetime_t")
-    dt.year = time.year
-    dt.mon = time.month
-    dt.mday = time.day
-    dt.hour = time.hour
-    dt.min = time.min
-    dt.sec = time.sec
-    dt.isdst = time.isdst and 1 or 0
+local function orzero(v)
+  return v ~= nil and v or 0
+end
+
+function datetime.time(ts)
+  local num
+  if not ts then
+    local hr = ffi.new("hrtime_t");
+    tlib.get_hrtime(hr);
+    num = tonumber(hr.sec + (hr.msec / 1000))
+  else
+    num = os.time(ts)
+    num = num + (orzero(ts.msec) / 1000)
   end
-  return tlib.get_time(dt)
+
+  return num
 end
 
 function datetime.date(format,time)
-  local utc_test = format:sub(1,1)
-  local utc = format:sub(1,1) == '!' and 1 or 0
+  local utc
+  local f
+  local msec = 0
 
-  if utc == 1 then
-    format = format:sub(2)
+  if format == nil then
+    format = "%c"
   end
 
   if not time then
-    time = ffi.new("datetime_t");
-    tlib.get_datetime(time,utc)
+    local t = ffi.new("datetime_t")
+    local hr = ffi.new("hrtime_t")
+
+    tlib.get_datetime(t,1)
+    tlib.datetime_to_hrtime(t,hr)
+    time = tonumber(hr.sec)
+    msec = tonumber(t.msec)
+  else
+    msec = floor((time - floor(time)) * 1000)
+    time = floor(time)
   end
 
-  if format == "*t" then
-    return {
-      year = time.year,
-      month = time.mon,
-      day = time.mday,
-      hour = time.hour,
-      min = time.min,
-      sec = time.sec,
-      milli = time.milli,
-      wday = time.wday,
-      yday = time.yday,
-      isdst = time.isdst == 1
-    }
+  format = gsub(format,"%%N",string.format("%03d",msec))
+
+  local r = os.date(format,time)
+  if type(r) == "table" then
+    r.msec = msec
   end
+
+  return r
+
 end
+
+datetime.clock = os.clock
 
 
 return datetime
