@@ -41,7 +41,7 @@ function script_properties()
   if sources then
     for _, source in ipairs(sources) do
       local s_id = obslua.obs_source_get_id(source)
-      if s_id == "text_giplus" or s_id == "text_ft2_source" then
+      if s_id == "text_gdiplus" or s_id == "text_ft2_source" then
         local n = obslua.obs_source_get_name(source)
         obslua.obs_property_list_add_string(p,n,n)
       end
