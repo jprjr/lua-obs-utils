@@ -33,7 +33,7 @@ test: $(LIBRARY) lib/datetime.lua test.lua
 dist:
 	make -f Makefile.docker
 	mkdir -p lua-obs-utils-$(VERSION)/lib/datetime
-	cp time.lua dist
+	cp time.lua  lua-obs-utils-$(VERSION)/
 	cp lib/datetime/*   lua-obs-utils-$(VERSION)/lib/datetime/
 	cp lib/datetime.lua lua-obs-utils-$(VERSION)/lib/datetime.lua
 	cp README.md lua-obs-utils-$(VERSION)/
