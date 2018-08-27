@@ -1,7 +1,7 @@
 .PHONY: all clean cleanup library
 
 CC=x86_64-w64-mingw32-gcc
-CFLAGS=-Wall -Wextra
+CFLAGS=-Wall -Wextra -g0 -O3
 LDFLAGS=-s -nostdlib -lkernel32
 EXT=dll
 PLATFORM=windows
@@ -11,6 +11,9 @@ all: library
 
 test:
 	exec $(MAKE) EXT="$(EXT)" CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" PLATFORM=$(PLATFORM) ARCH=$(ARCH) test
+
+32bit:
+	exec $(MAKE) EXT="$(EXT)" CC="i686-w64-mingw32-gcc" CFLAGS="$(CFLAGS)" LDFLAGS="-static-libgcc $(LDFLAGS) -lgcc" PLATFORM=$(PLATFORM) ARCH=x86 library
 
 library:
 	exec $(MAKE) EXT="$(EXT)" CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" PLATFORM=$(PLATFORM) ARCH=$(ARCH) library

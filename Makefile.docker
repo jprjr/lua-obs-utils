@@ -6,4 +6,5 @@ all:
 	make cleanup
 	make
 	docker run --rm -ti -v $(shell pwd):/src timelib-linux /bin/sh -c "make -C /src -f Makefile.linux cleanup && make -C /src -f Makefile.linux library"
+	docker run --rm -ti -v $(shell pwd):/src timelib-windows /bin/sh -c "make -C /src -f Makefile.mingw cleanup && make -C /src -f Makefile.mingw 32bit"
 	docker run --rm -ti -v $(shell pwd):/src timelib-windows /bin/sh -c "make -C /src -f Makefile.mingw cleanup && make -C /src -f Makefile.mingw test"
