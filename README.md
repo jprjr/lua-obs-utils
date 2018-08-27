@@ -22,6 +22,11 @@ And you'll have a tar.gz and .zip made with a ready-to-go package.
 A script for displaying a basic clock in OBS. Uses a C module
 to get time in milliseconds.
 
+## Downloads
+
+See the [releases tab](https://github.com/jprjr/lua-obs-utils/releases)
+for downloads with binaries for MacOS, Windows, and Linux.
+
 ## LICENSE
 
 MIT license, see `LICENSE`
